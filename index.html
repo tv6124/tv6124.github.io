@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Dominus Rooms — Dubrovnik</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --black: #0A0A0A;
+    --white: #FAFAF8;
+    --off-white: #F2EFE9;
+    --charcoal: #1A1A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  /* NAVIGATION */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 60px;
+    background: transparent;
+    transition: background 0.5s ease, padding 0.3s;
+  }
+  nav.scrolled {
+    background: rgba(10,10,10,0.92);
+    padding: 18px 60px;
+    backdrop-filter: blur(12px);
+  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .logo {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    letter-spacing: 0.15em;
+    color: var(--white);
+    text-decoration: none;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .logo span {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    margin-top: 3px;
+  }
+  .nav-book {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    padding: 10px 24px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .nav-book:hover { background: var(--gold); color: var(--black); }
+
+  
+  .page { display: none; }
+  .page.active { display: block; }
+
+  
+  .hero { position: relative; height: 100vh; overflow: hidden; }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.75) 100%),
+    url('https://images.unsplash.com/photo-1555990793-da11153b2473?w=1800&q=80') center/cover no-repeat;
+    transform: scale(1.05);
+    animation: heroZoom 12s ease-out forwards;
+  }
+  @keyframes heroZoom { to { transform: scale(1); } }
+  .hero-content {
+    position: absolute; bottom: 14%; left: 10%;
+    color: var(--white);
+    animation: fadeUp 1.4s 0.4s both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.4em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 18px;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 8vw, 110px);
+    font-weight: 300; line-height: 0.92;
+    margin-bottom: 28px; letter-spacing: -0.01em;
+  }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-sub {
+    font-family: 'Jost', sans-serif; font-weight: 200;
+    font-size: 14px; letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.75); max-width: 340px; line-height: 1.8;
+  }
+  .hero-scroll {
+    position: absolute; bottom: 36px; right: 60px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    color: rgba(255,255,255,0.5); font-family: 'Cinzel', serif;
+    font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+    animation: fadeUp 1.4s 1s both;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.8), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+  .gold-divider {
+    display: flex; align-items: center; gap: 20px;
+    padding: 0 10%; margin: 64px 0;
+  }
+  .gold-divider .line {
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+  .gold-divider .diamond {
+    width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg);
+  }
+
+  .info-section { padding: 100px 10%; background: var(--white); }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .section-eyebrow {
+    font-family: 'Cinzel', serif; font-size: 9px;
+    letter-spacing: 0.38em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px); font-weight: 300;
+    line-height: 1.1; margin-bottom: 28px; color: var(--charcoal);
+  }
+  .section-title em { font-style: italic; color: var(--gold-dark); }
+  .section-text {
+    font-family: 'Jost', sans-serif; font-weight: 300;
+    font-size: 15px; line-height: 1.95; color: #555; margin-bottom: 20px;
+  }
+  .btn-gold {
+    display: inline-block; margin-top: 32px;
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--white); background: var(--gold-dark);
+    padding: 16px 40px; text-decoration: none;
+    transition: all 0.35s; position: relative; overflow: hidden;
+  }
+  .btn-gold::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--gold); transform: scaleX(0);
+    transform-origin: left; transition: transform 0.35s ease;
+  }
+  .btn-gold:hover::before { transform: scaleX(1); }
+  .btn-gold span { position: relative; z-index: 1; }
+
+ 
+  .info-photo { position: relative; overflow: hidden; }
+  .info-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.7s ease;
+  }
+  .info-photo:hover img { transform: scale(1.03); }
+  .info-photo::after {
+    content: ''; position: absolute; inset: 0;
+    border: 1px solid rgba(201,168,76,0.25); pointer-events: none;
+  }
+
+
+  .history-section { padding: 130px 10% 80px; background: var(--white); }
+  .history-header { text-align: center; margin-bottom: 90px; }
+  .history-intro {
+    font-family: 'Cormorant Garamond', serif; font-size: 22px;
+    font-style: italic; font-weight: 300; color: #666;
+    max-width: 700px; margin: 0 auto; line-height: 1.7;
+  }
+  .history-block {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; margin-bottom: 2px; min-height: 520px;
+  }
+  .history-block.reverse { direction: rtl; }
+  .history-block.reverse > * { direction: ltr; }
+  .history-img { overflow: hidden; position: relative; }
+  .history-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform 0.7s ease;
+  }
+  .history-img:hover img { transform: scale(1.04); }
+  .history-img .year-badge {
+    position: absolute; bottom: 28px; left: 28px;
+    font-family: 'Cormorant Garamond', serif; font-size: 64px;
+    font-weight: 300; color: rgba(255,255,255,0.15);
+    line-height: 1; pointer-events: none;
+  }
+  .history-text {
+    background: var(--charcoal); color: var(--white);
+    padding: 72px 64px; display: flex; flex-direction: column; justify-content: center;
+  }
+  .history-text .section-eyebrow { color: var(--gold); }
+  .history-text .section-title { color: var(--white); }
+  .history-text .section-text { color: rgba(255,255,255,0.65); }
+  .gold-quote {
+    border-left: 2px solid var(--gold); padding-left: 24px; margin: 28px 0;
+    font-family: 'Cormorant Garamond', serif; font-size: 20px;
+    font-style: italic; color: var(--gold-light); line-height: 1.6;
+  }
+  .history-text-light {
+    background: var(--off-white); padding: 72px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+ 
+  .gallery-hero {
+    height: 50vh; position: relative;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .gallery-hero-bg {
+    position: absolute; inset: 0;
+    background: url('IMG_8098.JPG') center/cover no-repeat;
+    filter: brightness(0.3);
+  }
+  .gallery-hero-content { position: relative; text-align: center; color: var(--white); }
+  .gallery-hero-content .section-eyebrow { color: var(--gold); margin-bottom: 16px; }
+  .gallery-section { padding: 80px 6%; background: var(--white); }
+  .gallery-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px;
+  }
+  .g-item { overflow: hidden; position: relative; cursor: pointer; background: #eee; }
+  .g-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; transition: transform 0.55s ease;
+  }
+  .g-item:hover img { transform: scale(1.06); }
+  .g-item .overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0);
+    display: flex; align-items: flex-end; padding: 20px; transition: background 0.35s;
+  }
+  .g-item:hover .overlay { background: rgba(0,0,0,0.45); }
+  .g-item .overlay-text {
+    font-family: 'Cormorant Garamond', serif; font-size: 18px;
+    font-style: italic; color: var(--white);
+    opacity: 0; transform: translateY(8px); transition: all 0.35s;
+  }
+  .g-item:hover .overlay-text { opacity: 1; transform: translateY(0); }
+  .g-item:nth-child(1)  { grid-column: span 7; grid-row: span 2; height: 520px; }
+  .g-item:nth-child(2)  { grid-column: span 5; height: 257px; }
+  .g-item:nth-child(3)  { grid-column: span 5; height: 257px; }
+  .g-item:nth-child(4)  { grid-column: span 4; height: 340px; }
+  .g-item:nth-child(5)  { grid-column: span 4; height: 340px; }
+  .g-item:nth-child(6)  { grid-column: span 4; height: 340px; }
+  .g-item:nth-child(7)  { grid-column: span 6; height: 300px; }
+  .g-item:nth-child(8)  { grid-column: span 6; height: 300px; }
+  .g-item:nth-child(9)  { grid-column: span 4; height: 300px; }
+  .g-item:nth-child(10) { grid-column: span 4; height: 300px; }
+  .g-item:nth-child(11) { grid-column: span 4; height: 300px; }
+  .g-item:nth-child(12) { grid-column: span 12; height: 400px; }
+
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+    z-index: 999; display: none; align-items: center; justify-content: center;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 85vw; max-height: 85vh; object-fit: contain;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .lightbox-close {
+    position: absolute; top: 28px; right: 36px;
+    font-family: 'Cinzel', serif; font-size: 12px;
+    letter-spacing: 0.2em; color: var(--gold);
+    cursor: pointer; text-transform: uppercase;
+  }
+
+
+  footer { background: var(--black); padding: 72px 10% 40px; color: rgba(255,255,255,0.4); }
+  .footer-grid {
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px; margin-bottom: 60px;
+  }
+  .footer-logo {
+    font-family: 'Cinzel', serif; font-size: 26px;
+    color: var(--white); letter-spacing: 0.12em; margin-bottom: 16px;
+  }
+  .footer-logo span {
+    display: block; font-size: 9px; letter-spacing: 0.4em;
+    color: var(--gold); font-family: 'Jost', sans-serif;
+    font-weight: 200; margin-top: 4px;
+  }
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 16px; color: rgba(255,255,255,0.35); line-height: 1.6; margin-top: 10px;
+  }
+  .footer-col h4 {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.25em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 22px;
+  }
+  .footer-col p, .footer-col a {
+    font-size: 13px; font-weight: 300; line-height: 2;
+    color: rgba(255,255,255,0.4); display: block;
+    text-decoration: none; transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 32px; display: flex;
+    justify-content: space-between; align-items: center;
+    font-size: 11px; font-weight: 300;
+  }
+  .footer-bottom .gold-text { color: var(--gold); }
+
+
+  .page { animation: pageFade 0.6s ease both; }
+  @keyframes pageFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  
+  @media (max-width: 900px) {
+    nav { padding: 20px 28px; }
+    .nav-links { display: none; }
+    .hero-content { left: 6%; bottom: 10%; }
+    .info-grid { grid-template-columns: 1fr; gap: 48px; }
+    .history-block { grid-template-columns: 1fr; }
+    .history-img { height: 300px; }
+    .history-block.reverse { direction: ltr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .g-item { grid-column: span 1 !important; height: 200px !important; grid-row: span 1 !important; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
+</style>
+</head>
+<body>
+
+
+<nav id="navbar">
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('history')">History</a></li>
+    <li><a href="#" onclick="showPage('gallery')">Gallery</a></li>
+  </ul>
+  <a href="#" class="logo" onclick="showPage('home'); return false;">
+    DOMINUS ROOMS
+    <span>Dubrovnik</span>
+  </a>
+  <a href="https://www.booking.com/hotel/hr/dominus-rooms.en-gb.html?aid=311984&label=dominus-rooms-sMDlAtfWYFuKXB1_6UGkYgS589923595917%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atikwd-463669181003%3Alp9209459%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_3qo3uPTHyoo&sid=2406e82817558d4556e1f24ab845e2d1" target="_blank" class="nav-book"><span>Book Now</span></a>
+</nav>
+
+<div id="page-home" class="page active">
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Est. 1887 · Dubrovnik, Croatia</p>
+      <h1 class="hero-title">Where the<br>Old Town<br><em>Whispers</em></h1>
+      <p class="hero-sub">A timeless sanctuary perched above the pearl of the Adriatic, where history and luxury embrace.</p>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <section class="info-section">
+    <div class="info-grid">
+      <div class="info-left">
+        <p class="section-eyebrow">About the Rooms</p>
+        <h2 class="section-title">A Legacy of<br><em>Elegance</em></h2>
+        <p class="section-text">Nestled within the ancient stone walls of Dubrovnik, Dominus Rooms is a place where centuries of history meet contemporary luxury. Our 2 individually curated rooms offer sweeping views of the Old Town and the terracotta rooftops of the City.</p>
+        <p class="section-text">Awarded five stars for five consecutive decades, we pride ourselves on delivering an experience that transcends the ordinary — where every detail reflects our commitment to the extraordinary.</p>
+        <a href="https://www.booking.com/hotel/hr/dominus-rooms.en-gb.html?aid=311984&label=dominus-rooms-sMDlAtfWYFuKXB1_6UGkYgS589923595917%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atikwd-463669181003%3Alp9209459%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_3qo3uPTHyoo&sid=2406e82817558d4556e1f24ab845e2d1" target="_blank" class="btn-gold"><span>Reserve Your Stay</span></a>
+      </div>
+      <div class="info-photo">
+        <img src="IMG_8101.JPG" alt="Hotel Adriatica Dubrovnik" />
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider">
+    <div class="line"></div>
+    <div class="diamond"></div>
+    <div class="line"></div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">DOMINUS ROOMS <span> Dubrovnik</span></div>
+        <div class="footer-tagline">"Where every morning begins<br>with the views."</div>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>Puzljiva Ulica 5</p>
+        <p>20000 Dubrovnik, Croatia</p>
+        <a href="tel:+38520000000">+385 91 111 2240</a>
+        <a href="mailto:stay@adriaticahotel.hr">os.mirela@gmail.com</a>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#" onclick="showPage('home'); return false;">Home</a>
+        <a href="#" onclick="showPage('history'); return false;">Our History</a>
+        <a href="#" onclick="showPage('gallery'); return false;">Gallery</a>
+      </div>
+      <div class="footer-col">
+        <h4>Hours</h4>
+        <p>Check-in: 3:00 PM</p>
+        <p>Check-out: 11:00 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dominus Rooms Dubrovnik. All rights reserved.</span>
+      <span class="gold-text">Crafted with care in Croatia</span>
+    </div>
+  </footer>
+
+</div>
+
+
+<div id="page-history" class="page">
+
+  <div style="height: 100px; background: var(--black);"></div>
+
+  <section class="history-section">
+    <div class="history-header">
+      <p class="section-eyebrow" style="text-align:center; margin-bottom:20px;">Our Story</p>
+      <h2 class="section-title" style="text-align:center; font-size: clamp(44px,5vw,70px);">A Century of <em>Heritage</em></h2>
+      <div class="gold-divider" style="margin: 32px 0;">
+        <div class="line"></div><div class="diamond"></div><div class="line"></div>
+      </div>
+      <p class="history-intro">For over a century, Dominus Rooms has stood as a silent witness to the rise and fall of empires, the tides of history, and the enduring allure of the Adriatic coast.</p>
+    </div>
+
+    <div class="history-block">
+      <div class="history-img">
+        <img src="IMG_7928.JPG" alt="Historic Dubrovnik">
+        <div class="year-badge">1887</div>
+      </div>
+      <div class="history-text">
+        <p class="section-eyebrow">The Beginning</p>
+        <h3 class="section-title">Born from<br><em>Stone & Sea</em></h3>
+        <div class="gold-quote">"Built not for a night, but for a lifetime of memories."</div>
+        <p class="section-text">Dominus Rooms was born from a deep love for Dubrovnik — its ancient limestone walls, its salt-kissed air, and the warm light that falls across the old city each evening like a blessing. What began as a family home within the heart of the UNESCO-protected Old Town has been carefully and lovingly transformed into a place where guests can experience the city the way it was meant to be lived.</p>
+        <p class="section-text">Every stone in these walls has a story. The building dates back centuries, its thick Dalmatian limestone keeping the rooms cool in summer and warm in the quiet of winter. We have preserved every original detail — the arched doorways, the worn terracotta floors, the narrow staircase that winds upward toward the light — because we believe a place this old deserves to be treated with reverence.</p>
+      </div>
+    </div>
+
+    <div class="history-block reverse">
+      <div class="history-img">
+        <img src="IMG_8103.JPG" alt="Dubrovnik Old City">
+        <div class="year-badge">1960</div>
+      </div>
+      <div class="history-text-light">
+        <p class="section-eyebrow">The Golden Era</p>
+        <h3 class="section-title">Preserving<br>the <em>Original Soul</em></h3>
+        <div class="gold-quote" style="border-color: var(--gold-dark); color: var(--gold-dark);">Within these walls, history was not replaced — it was carefully preserved.”</div>
+        <p class="section-text">When Dominus Rooms was renewed, its most defining feature remained untouched: the original stone walls that have stood for generations. Rather than concealing them, the restoration celebrated their texture, craftsmanship, and story.</p>
+        <p class="section-text">Each stone carries the character of the past, linking today’s guests with the building’s long history by the Adriatic coast. The design embraces this authenticity, pairing the historic masonry with warm modern comforts and light-filled interiors. By preserving the original walls, Dominus Rooms keeps its true identity intact — allowing visitors not only to stay in the hotel, but to experience a piece of its enduring story.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">DOMINUS ROOMS <span>Hotel · Dubrovnik</span></div>
+        <div class="footer-tagline">"Where every morning begins<br>with the sea."</div>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>Puzljiva Ulica 5</p>
+        <p>20000 Dubrovnik, Croatia</p>
+        <a href="tel:+38520000000">+385 91 111 2240</a>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <a href="#" onclick="showPage('home'); return false;">Home</a>
+        <a href="#" onclick="showPage('gallery'); return false;">Gallery</a>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#" onclick="showPage('home'); return false;">← Back to Home</a>
+        <a href="#" onclick="showPage('gallery'); return false;">View Gallery →</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dominus Rooms Dubrovnik.</span>
+      <span class="gold-text">Crafted with care in Croatia</span>
+    </div>
+  </footer>
+
+</div>
+
+
+<div id="page-gallery" class="page">
+
+  <section class="gallery-hero">
+    <div class="gallery-hero-bg"></div>
+    <div class="gallery-hero-content">
+      <p class="section-eyebrow">Gallery</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:clamp(44px,6vw,80px); font-weight:300; color:var(--white); letter-spacing:0.04em;">Through the <em style="color:var(--gold-light);">Lens</em></h2>
+    </div>
+  </section>
+
+  <section class="gallery-section">
+    <div class="gallery-grid">
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8098.JPG" alt="Gallery 1">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8099.JPG" alt="Gallery 2">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8100.JPG" alt="Gallery 3">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8102.JPG" alt="Gallery 4">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8104.JPG" alt="Gallery 5">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8105.JPG" alt="Gallery 6">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8106.JPG" alt="Gallery 7">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8107.JPG" alt="Gallery 8">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8112.JPG" alt="Gallery 9">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8113.JPG" alt="Gallery 10">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8114.JPG" alt="Gallery 11">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+      <div class="g-item" onclick="openLightbox(this)">
+        <img src="IMG_8115.JPG" alt="Gallery 12">
+        <div class="overlay"><div class="overlay-text">Dominus Rooms</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">DOMINUS ROOMS <span>Dubrovnik</span></div>
+        <div class="footer-tagline">"Where every morning begins<br>with the sea."</div>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>Puzljiva Ulica 5</p>
+        <p>20000 Dubrovnik, Croatia</p>
+        <a href="tel:+38520000000">+385 91 111 2240</a>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#" onclick="showPage('home'); return false;">← Back to Home</a>
+        <a href="#" onclick="showPage('history'); return false;">Our History</a>
+      </div>
+      <div class="footer-col">
+        <h4>Book</h4>
+        <a href="https://www.booking.com/hotel/hr/dominus-rooms.en-gb.html?aid=311984&label=dominus-rooms-sMDlAtfWYFuKXB1_6UGkYgS589923595917%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atikwd-463669181003%3Alp9209459%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YTQUGSsRwx9_3qo3uPTHyoo&sid=2406e82817558d4556e1f24ab845e2d1" target="_blank">Reservations</a>
+        <a href="#">Special Offers</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Dominus Rooms Dubrovnik.</span>
+      <span class="gold-text">Crafted with care in Croatia</span>
+    </div>
+  </footer>
+
+</div>
+
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close">✕ Close</div>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  function openLightbox(el) {
+    const img = el.querySelector('img');
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+</script>
+</body>
+</html>
